@@ -8,7 +8,8 @@ class MainComponent extends Component {
         this.state = { 
             todos: [],
             todoToShow: "all",
-            toggleAllComplete: true
+            toggleAllComplete: true,
+            focus: false
          }
         //  this._addItem = this._addItem.bind(this);
     }
@@ -29,6 +30,7 @@ class MainComponent extends Component {
                 ...todo,
                 complete: !todo.complete,
                 checked: !todo.checked,
+                focus: false
               };
             } else {
               return todo;
@@ -54,8 +56,6 @@ class MainComponent extends Component {
           todos: state.todos.filter(todo => !todo.complete && !todo.checked)
         }));
       };
-      
-    
 
     render() { 
         let todos = [];
@@ -71,7 +71,6 @@ class MainComponent extends Component {
 
         return ( 
         <Fragment>
-
             <div className="todoapp stack-large">
                     <h1>Todos</h1>
                 <TodoForm onSubmit={this._addTodo} />

@@ -1,4 +1,10 @@
 /* RESETS */
+body{
+  background-image: url("./images/img.jpg");
+  object-fit: cover;
+  background-repeat: no-repeat;
+}
+
 *,
 *::before,
 *::after {
@@ -241,6 +247,9 @@ body {
   min-height: 44px;
   padding-left: 40px;
   clear: left;
+  padding: 10px;
+  border: 2px solid gray;
+  border-radius: 7px;
 }
 .c-cb > label::before,
 .c-cb > input[type="checkbox"] {
@@ -306,7 +315,17 @@ body {
 
 
 .c-cb > input[type="checkbox"]{
-    margin-top: 0.3rem !important;
-    margin-left: -1.25rem !important;
-    opacity: unset;
+  margin-top: 0.7rem !important;
+  margin-left: 0.75rem !important;
+  opacity: unset;
+}
+
+/* #mainComponentWrapper{
+  background-image: url("./images/img.jpg");
+  object-fit: cover;
+  background-repeat: no-repeat;
+} */
+
+.listDiv{
+  padding-left: 50px !important;
 }

@@ -2,7 +2,8 @@ import React, { Component , Fragment} from 'react';
 
 export default class TodoForm extends Component {
     state = {
-      text: ""
+      text: "",
+      id:""
     };
   
     _handleChange = event => {
