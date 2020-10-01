@@ -13,14 +13,15 @@ export default class TodoForm extends Component {
   
     _handleSubmit = event => {
       event.preventDefault();
-      if((this.state.text.trim() ==="") || (this.state.text.trim().length===0)){
-        
+      if((this.state.text.trim() === "") || (this.state.text.trim().length === 0)){
+        // Not accepting White Spaces 
       }
       else{
         this.props.onSubmit({
           id: Date.now(),
           text: this.state.text,
-          complete: false
+          complete: false,
+          checked : false
         });
         this.setState({
           text: ""

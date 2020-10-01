@@ -15,7 +15,8 @@ class MainComponent extends Component {
 
     _addTodo = todo => {
         this.setState(state => ({
-          todos: [todo, ...state.todos]
+          todos: [todo, ...state.todos],
+          checked: false,
         }));
       };
     
@@ -26,7 +27,8 @@ class MainComponent extends Component {
               // suppose to update
               return {
                 ...todo,
-                complete: !todo.complete
+                complete: !todo.complete,
+                checked: !todo.checked,
               };
             } else {
               return todo;
@@ -49,7 +51,7 @@ class MainComponent extends Component {
     
       _removeAllTodosThatAreComplete = () => {
         this.setState(state => ({
-          todos: state.todos.filter(todo => !todo.complete)
+          todos: state.todos.filter(todo => !todo.complete && !todo.checked)
         }));
       };
       
@@ -61,9 +63,9 @@ class MainComponent extends Component {
     if (this.state.todoToShow === "all") {
       todos = this.state.todos;
     } else if (this.state.todoToShow === "active") {
-      todos = this.state.todos.filter(todo => !todo.complete);
+      todos = this.state.todos.filter(todo => !todo.complete && !todo.checked);
     } else if (this.state.todoToShow === "complete") {
-      todos = this.state.todos.filter(todo => todo.complete);
+      todos = this.state.todos.filter(todo => todo.complete && todo.checked);
     }
 
 
@@ -93,7 +95,11 @@ class MainComponent extends Component {
                 </div>
                 <h2 id="list-heading">Tasks remaining : {this.state.todos.filter(todo => !todo.complete).length}</h2>
                 <div className="d-flex justify-content-between align-items-center">
-                    <button className="btn toggle-btn" onClick={() => this.setState(state => ({ todos: state.todos.map(todo => ({...todo, complete: state.toggleAllComplete})),toggleAllComplete: !state.toggleAllComplete}))}>
+                    <button className="btn toggle-btn" 
+                        onClick={() => this.setState(state => ({
+                             todos: state.todos.map(todo => (
+                                 {...todo, complete: state.toggleAllComplete, checked: state.toggleAllComplete})),
+                                 toggleAllComplete: !state.toggleAllComplete}))}>
                         toggle all complete: {`${this.state.toggleAllComplete}`}
                     </button>
                     {this.state.todos.some(todo => todo.complete) ? (
@@ -106,11 +112,12 @@ class MainComponent extends Component {
                 </div>
                 
                 {todos.map(todo => (
-                    <Todo
+                    <Todo 
                         key={todo.id}
                         toggleComplete={() => this._toggleComplete(todo.id)}
                         onDelete={() => this._handleDeleteTodo(todo.id)}
                         todo={todo}
+                        onChecked={todo.checked}
                     />
                 ))}
             </div>    
