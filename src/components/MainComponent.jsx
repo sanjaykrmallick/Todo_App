@@ -1,116 +1,121 @@
 import React, { Component, Fragment } from 'react';
+import TodoForm from "./TodoForm"
+import Todo from "./Todo"
 
 class MainComponent extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            item : "",
-            list: [],
+            todos: [],
+            todoToShow: "all",
+            toggleAllComplete: true
          }
-         this._handleChange = this._handleChange.bind(this);
-         this._handleSubmit = this._handleSubmit.bind(this);
+        //  this._addItem = this._addItem.bind(this);
     }
 
-    _handleChange= (e) => this.setState({item: e.target.value});
-
-    _handleSubmit= (e) => {
-        e.preventDefault();
-        
-        if(this.state.item === ""){
-            
-        }
-        else{
-            const item = {
-                id: 1 + Math.random(),
-                value: this.state.item
+    _addTodo = todo => {
+        this.setState(state => ({
+          todos: [todo, ...state.todos]
+        }));
+      };
+    
+      _toggleComplete = id => {
+        this.setState(state => ({
+          todos: state.todos.map(todo => {
+            if (todo.id === id) {
+              // suppose to update
+              return {
+                ...todo,
+                complete: !todo.complete
               };
-          
-              //copy current list of items
-              const list = [...this.state.list];
-              console.log(list)
-          
-              //add new item to the list
-              list.push(item);
-            this.setState({
-                item: '',
-                list: [...this.state.list, this.state.item]
-              });
-        }
-    }
-
-    deleteItem(id) {
-        console.log(id);
-        //copy list
-        const list = [...this.state.list];
+            } else {
+              return todo;
+            }
+          })
+        }));
+      };
     
-        //filter out deleted object
-        //remember that the list (each object) gets assigned a value and id when its added to list
-        const updatedList = list.filter(item => item.id !== id);
+      _updateTodoToShow = s => {
+        this.setState({
+          todoToShow: s
+        });
+      };
     
-        //update state
-        this.setState({ list: updatedList });
-      }
-
+      _handleDeleteTodo = id => {
+        this.setState(state => ({
+          todos: state.todos.filter(todo => todo.id !== id)
+        }));
+      };
+    
+      _removeAllTodosThatAreComplete = () => {
+        this.setState(state => ({
+          todos: state.todos.filter(todo => !todo.complete)
+        }));
+      };
+      
     
 
     render() { 
+        let todos = [];
+
+    if (this.state.todoToShow === "all") {
+      todos = this.state.todos;
+    } else if (this.state.todoToShow === "active") {
+      todos = this.state.todos.filter(todo => !todo.complete);
+    } else if (this.state.todoToShow === "complete") {
+      todos = this.state.todos.filter(todo => todo.complete);
+    }
+
+
         return ( 
         <Fragment>
+
             <div className="todoapp stack-large">
-                <h1>Todos</h1>
-                <form onSubmit={this._handleSubmit}>
-                    <h2 className="label-wrapper">
-                        <label htmlFor="new-todo-input" className="label__lg">What needs to be done?</label>
-                    </h2>
-                    <input type="text" id="new-todo-input" className="input input__lg" name="text" autoComplete="off" placeholder="Add a new Todo ..." onChange={this._handleChange} value={this.state.item}/>
-                    <button className="btn btn__primary btn__lg"  >Add</button>
-                </form>
+                    <h1>Todos</h1>
+                <TodoForm onSubmit={this._addTodo} />
+
                 <div className="filters btn-group stack-exception">
-                    <button type="button" className="btn toggle-btn" aria-pressed="true">
-                    <span className="visually-hidden">Show </span>
-                    <span>all</span>
-                    <span className="visually-hidden"> tasks</span>
-                </button>
-                <button type="button" className="btn toggle-btn" aria-pressed="false">
-                    <span className="visually-hidden">Show </span>
-                    <span>Active</span>
-                    <span className="visually-hidden"> tasks</span>
-                </button>
-                <button type="button" className="btn toggle-btn" aria-pressed="false">
-                    <span className="visually-hidden">Show </span>
-                    <span>Completed</span>
-                    <span className="visually-hidden"> tasks</span>
-                </button>
-            </div>
-            <h2 id="list-heading">3 tasks remaining</h2>
-            <ul  className="todo-list stack-large stack-exception list-group" aria-labelledby="list-heading">
-                {/* {this.state.items!== [] ? <TodoListItem listValue={this.state.items}/> : <Fragment><h1>Null</h1></Fragment>} */}
-                {this.state.list.map((item,key) => {
-                    return (
-                    <li className="todo stack-small" id={item.key}>
-                        <div className="c-cb">
-                            <input  value={item.text} onChange={(e)=>{this.setUpdate(e.target.value,item.key)}} type="checkbox" defaultChecked={false} />
-                            <label className="todo-label" htmlFor="todo-0">{item}</label>
-                        </div>
-                        <div className="btn-group">
-                            <button type="button" className="btn">Edit <span className="visually-hidden">{item}</span></button>
-                            <button type="button" className="btn btn__danger" onClick={() => this.deleteItem(item.id)} >Delete <span className="visually-hidden">{item}</span></button>
-                        </div>
-                    </li>
-                    )
-                })}
-                {/* {this.state.list.map(item => {
-                    return (
-                        <li class="list-group-item list-group-item-light d-flex justify-content-between align-items-center" key={item.id}>
-                            {item}
-                            <button type="button" class="btn btn-danger" onClick={() => this.deleteItem(item.id)}>X</button>
-                        </li>
-                    );
-                })} */}
-            </ul>
-        </div>
-        </Fragment> 
-        );
+                     <button type="button" className="btn toggle-btn" aria-pressed="true" onClick={() => this._updateTodoToShow("all")}>
+                         <span className="visually-hidden">Show </span>
+                         <span>all</span>
+                        <span className="visually-hidden"> tasks</span>
+                     </button>
+                     <button type="button" className="btn toggle-btn" aria-pressed="false" onClick={() => this._updateTodoToShow("active")}>
+                        <span className="visually-hidden">Show </span>
+                         <span>Active</span>
+                         <span className="visually-hidden"> tasks</span>
+                     </button>
+                    <button type="button" className="btn toggle-btn" aria-pressed="false" onClick={() => this._updateTodoToShow("complete")}>
+                         <span className="visually-hidden">Show </span>
+                         <span>Completed</span>
+                         <span className="visually-hidden"> tasks</span>
+                     </button>
+                </div>
+                <h2 id="list-heading">Tasks remaining : {this.state.todos.filter(todo => !todo.complete).length}</h2>
+                <div className="d-flex justify-content-between align-items-center">
+                    <button className="btn toggle-btn" onClick={() => this.setState(state => ({ todos: state.todos.map(todo => ({...todo, complete: state.toggleAllComplete})),toggleAllComplete: !state.toggleAllComplete}))}>
+                        toggle all complete: {`${this.state.toggleAllComplete}`}
+                    </button>
+                    {this.state.todos.some(todo => todo.complete) ? (
+                    <div>
+                        <button className="btn toggle-btn" onClick={this._removeAllTodosThatAreComplete}>
+                            remove all complete todos
+                        </button>
+                    </div>
+                ) : null}
+                </div>
+                
+                {todos.map(todo => (
+                    <Todo
+                        key={todo.id}
+                        toggleComplete={() => this._toggleComplete(todo.id)}
+                        onDelete={() => this._handleDeleteTodo(todo.id)}
+                        todo={todo}
+                    />
+                ))}
+            </div>    
+        </Fragment>
+         );
     }
 }
  
